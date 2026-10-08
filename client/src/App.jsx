@@ -3,6 +3,9 @@ import AuthRoute from "./components/AuthRoute.jsx";
 import AppLayout from "./components/AppLayout.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import AuthPage from "./pages/AuthPage.jsx";
+import ProductDetailsPage from "./pages/ProductDetailsPage.jsx";
+import ProductFormPage from "./pages/ProductFormPage.jsx";
+import ProductsPage from "./pages/ProductsPage.jsx";
 import PlaceholderPage from "./pages/PlaceholderPage.jsx";
 
 function App() {
@@ -22,19 +25,19 @@ function App() {
           />
           <Route
             path="/products"
-            element={<PlaceholderPage title="Products" />}
+            element={<ProductsPage />}
           />
           <Route
             path="/products/new"
-            element={<PlaceholderPage title="New product" />}
+            element={<ProductFormPage mode="create" />}
           />
           <Route
             path="/products/:id"
-            element={<PlaceholderPage title="Product details" />}
+            element={<ProductDetailsPage />}
           />
           <Route
             path="/products/:id/edit"
-            element={<PlaceholderPage title="Edit product" />}
+            element={<ProductFormPage mode="edit" />}
           />
           <Route
             path="/inventory"
