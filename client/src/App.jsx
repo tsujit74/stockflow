@@ -1,14 +1,18 @@
 import { Navigate, Route, Routes } from "react-router-dom";
+import AuthRoute from "./components/AuthRoute.jsx";
 import AppLayout from "./components/AppLayout.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import AuthPage from "./pages/AuthPage.jsx";
 import PlaceholderPage from "./pages/PlaceholderPage.jsx";
 
 function App() {
   return (
     <Routes>
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
-      <Route path="/login" element={<PlaceholderPage title="Login" />} />
-      <Route path="/register" element={<PlaceholderPage title="Register" />} />
+      <Route element={<AuthRoute />}>
+        <Route path="/login" element={<AuthPage mode="login" />} />
+        <Route path="/register" element={<AuthPage mode="register" />} />
+      </Route>
 
       <Route element={<ProtectedRoute />}>
         <Route element={<AppLayout />}>

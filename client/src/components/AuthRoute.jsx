@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext.jsx";
 
-function ProtectedRoute() {
+function AuthRoute() {
   const { isAuthenticated, isLoading } = useContext(AuthContext);
   const location = useLocation();
 
@@ -10,11 +10,11 @@ function ProtectedRoute() {
     return <p className="route-loading">Checking your session...</p>;
   }
 
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace state={{ from: location }} />;
+  if (isAuthenticated) {
+    return <Navigate to="/dashboard" replace />;
   }
 
-  return <Outlet />;
+  return <Outlet context={{ location }} />;
 }
 
-export default ProtectedRoute;
+export default AuthRoute;
