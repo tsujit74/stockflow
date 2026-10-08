@@ -35,6 +35,7 @@ Stock status is determined as follows:
 
 ```text
 StockFlow/
+
 ├── client/
 │   ├── src/
 │   │   ├── components/       # Shared layout, route guards, and product UI
@@ -194,17 +195,58 @@ SKUs are unique within each user's inventory.
 
 Stock-change requests use `productId`, `quantity`, and an optional `note`. For adjustments, `quantity` is the target stock level. A successful stock operation updates the product and records its previous and new quantities in an inventory transaction.
 
-## 9. Code0 / AI Usage
+## 9. Testing
+
+The application was tested across the main authentication, product, inventory, dashboard, and ownership flows.
+
+### Automated Testing
+
+The backend ownership integration test covers:
+
+* Product creation and ownership
+* Product listing and filtering
+* Duplicate SKU validation
+* Cross-user product access protection
+* Product update and deletion
+* Inventory stock-in and stock-out
+* Insufficient stock handling
+* Inventory transaction history
+* Dashboard ownership scoping
+
+Run the backend test with:
+
+```bash
+node --test server/tests/product-ownership.test.js
+```
+
+The current test suite passes all 9 tests.
+
+### Additional Verification
+
+The following were also verified during development:
+
+* User registration and login
+* HTTP-only authentication cookie
+* Session restoration using `/auth/me`
+* Logout and cookie clearing
+* Product search and category/stock-status filters
+* Product CRUD operations
+* Stock adjustment
+* Dashboard summary and category breakdown
+* Frontend production build
+* Frontend ESLint checks
+
+## 10. Code0 / AI Usage
 
 Code0, an AI development assistant, was used during the development of StockFlow for project analysis, implementation assistance, debugging and testing, and review. AI suggestions were treated as development assistance and were reviewed before being kept.
 
-## 10. AI Development Experience
+## 11. AI Development Experience
 
 I used Code0 to help understand the existing project structure, implement parts of the backend and frontend, investigate issues, and review the application. I reviewed the generated changes, tested the application, identified issues during development, and made the decisions about requirements, behavior, and which changes to retain.
 
 AI assistance helped speed up implementation and debugging, but I remained responsible for checking that the result matched the assignment and the intended application behavior.
 
-## 11. AI-Assisted Tasks
+## 12. AI-Assisted Tasks
 
 1. **Project structure analysis and planning:** Reviewed the starter structure and identified how to extend the existing client and server without introducing unrelated architecture.
 
