@@ -4,6 +4,7 @@ import AppLayout from "./components/AppLayout.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import AuthPage from "./pages/AuthPage.jsx";
 import DashboardPage from "./pages/DashboardPage.jsx";
+import InventoryPage from "./pages/InventoryPage.jsx";
 import ProductDetailsPage from "./pages/ProductDetailsPage.jsx";
 import ProductFormPage from "./pages/ProductFormPage.jsx";
 import ProductsPage from "./pages/ProductsPage.jsx";
@@ -42,7 +43,7 @@ function App() {
           />
           <Route
             path="/inventory"
-            element={<PlaceholderPage title="Inventory" />}
+            element={<InventoryPage />}
           />
         </Route>
       </Route>
