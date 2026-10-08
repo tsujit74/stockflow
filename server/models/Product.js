@@ -21,10 +21,15 @@ const productSchema = new mongoose.Schema(
     sku: {
       type: String,
       required: true,
-      unique: true,
       trim: true,
       uppercase: true,
       maxlength: 64,
+    },
+    owner: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+      index: true,
     },
     category: {
       type: String,
@@ -71,6 +76,7 @@ const productSchema = new mongoose.Schema(
 );
 
 productSchema.index({ name: "text", sku: "text" });
+productSchema.index({ owner: 1, sku: 1 }, { unique: true });
 
 const Product = mongoose.model("Product", productSchema);
 

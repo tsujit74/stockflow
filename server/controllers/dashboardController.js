@@ -1,8 +1,9 @@
 import Product from "../models/Product.js";
 
-export const getDashboardSummary = async (_req, res) => {
+export const getDashboardSummary = async (req, res) => {
   try {
     const [summary] = await Product.aggregate([
+      { $match: { owner: req.user._id } },
       {
         $facet: {
           totals: [

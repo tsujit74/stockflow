@@ -102,7 +102,7 @@ const handleProductError = (res, error, action) => {
   if (error.code === 11000) {
     return res.status(409).json({
       success: false,
-      message: "A product with that SKU already exists.",
+      message: "A product with that SKU already exists in your inventory.",
     });
   }
   if (error instanceof mongoose.Error.ValidationError || error instanceof mongoose.Error.CastError) {
@@ -123,7 +123,10 @@ export const createProduct = async (req, res) => {
   }
 
   try {
-    const product = await Product.create(req.body);
+    const product = await Product.create({
+      ...req.body,
+      owner: req.user._id,
+    });
     return res.status(201).json({
       success: true,
       product: presentProduct(product),
@@ -145,7 +148,7 @@ export const getProducts = async (req, res) => {
     return res.status(400).json({ success: false, message: "Invalid stock status." });
   }
 
-  const filter = {};
+  const filter = { owner: req.user._id };
   if (search?.trim()) {
     const escapedSearch = search.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     const searchRegex = new RegExp(escapedSearch, "i");
@@ -180,7 +183,10 @@ export const getProduct = async (req, res) => {
   }
 
   try {
-    const product = await Product.findById(req.params.id);
+    const product = await Product.findOne({
+      _id: req.params.id,
+      owner: req.user._id,
+    });
     if (!product) {
       return res.status(404).json({ success: false, message: "Product not found." });
     }
@@ -200,7 +206,10 @@ export const updateProduct = async (req, res) => {
   }
 
   try {
-    const product = await Product.findById(req.params.id);
+    const product = await Product.findOne({
+      _id: req.params.id,
+      owner: req.user._id,
+    });
     if (!product) {
       return res.status(404).json({ success: false, message: "Product not found." });
     }
@@ -219,7 +228,10 @@ export const deleteProduct = async (req, res) => {
   }
 
   try {
-    const product = await Product.findByIdAndDelete(req.params.id);
+    const product = await Product.findOneAndDelete({
+      _id: req.params.id,
+      owner: req.user._id,
+    });
     if (!product) {
       return res.status(404).json({ success: false, message: "Product not found." });
     }

@@ -62,8 +62,10 @@ const changeStock = async (req, res, { type, adjustment = false }) => {
 
     await session.withTransaction(async () => {
       if (adjustment) {
-        const currentProduct =
-          await Product.findById(productId).session(session);
+        const currentProduct = await Product.findOne({
+          _id: productId,
+          owner: req.user._id,
+        }).session(session);
 
         if (!currentProduct) {
           throw new InventoryRequestError(404, "Product not found.");
@@ -72,7 +74,7 @@ const changeStock = async (req, res, { type, adjustment = false }) => {
         previousQuantity = currentProduct.quantity;
 
         changedProduct = await Product.findOneAndUpdate(
-          { _id: productId },
+          { _id: productId, owner: req.user._id },
           { $set: { quantity } },
           { new: true, runValidators: true, session },
         );
@@ -85,7 +87,7 @@ const changeStock = async (req, res, { type, adjustment = false }) => {
           type === "STOCK_IN"
             ? { $inc: { quantity } }
             : { $inc: { quantity: -quantity } };
-        const conditions = { _id: productId };
+        const conditions = { _id: productId, owner: req.user._id };
         if (type === "STOCK_OUT") {
           conditions.quantity = { $gte: quantity };
         } else {
@@ -98,9 +100,10 @@ const changeStock = async (req, res, { type, adjustment = false }) => {
         });
 
         if (!changedProduct) {
-          const exists = await Product.exists({ _id: productId }).session(
-            session,
-          );
+          const exists = await Product.exists({
+            _id: productId,
+            owner: req.user._id,
+          }).session(session);
           if (!exists) {
             throw new InventoryRequestError(404, "Product not found.");
           }
@@ -188,7 +191,11 @@ export const getInventoryHistory = async (req, res) => {
   }
 
   try {
-    const filter = productId ? { product: productId } : {};
+    const ownedProductIds = await Product.distinct("_id", {
+      owner: req.user._id,
+      ...(productId ? { _id: productId } : {}),
+    });
+    const filter = { product: { $in: ownedProductIds } };
     const transactions = await InventoryTransaction.find(filter)
       .populate("product", "name sku")
       .populate("user", "name email")
